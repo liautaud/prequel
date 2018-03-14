@@ -1,6 +1,6 @@
 %{
     open Command
-    open Query
+    open Sql
 %}
 
 %token <string> ID
@@ -14,6 +14,7 @@
 %type<Command.t> main
 %%
 
+
 main:
   /* Top-level commands */
   | POINT ID  { Command ($2) }
@@ -24,9 +25,9 @@ main:
 
 query:
   | SELECT attributes FROM relations
-    { Select($2, $4, None) }
-  | SELECT attributes FROM relations WHERE condition
-    { Select($2, $4, Some $6) }
+    { Select($2, $4, VoidOp) }
+  | SELECT attributes FROM relations WHERE conditions
+    { Select($2, $4, $6) }
   | LPAR query RPAR MINUS LPAR query RPAR
     { Minus($2, $6) }
   | LPAR query RPAR UNION LPAR query RPAR
@@ -66,6 +67,27 @@ relation:
   | LPAR query RPAR { Sub ($2) }
 
 
-/* Conditions (TODO) */
+/* Conditions */
+conditions:
+  | conditions_and OR conditions { BinOp(Or, $1, $3) }
+  | conditions_and { $1 }
+
+conditions_and:
+  | condition AND conditions_and { BinOp(And, $1, $3) }
+  | condition { $1 }
+
 condition:
-  | { NoOp }
+  | LPAR condition RPAR              { $2 }
+  | attribute comp attribute         { CompOp($2, $1, $3) }
+  | attribute IN LPAR query RPAR     { In($1, $4) }
+  | attribute NOT IN LPAR query RPAR { NotIn($1, $5) }
+
+
+/* Comparison operators */
+comp:
+  | LT  { Lt }
+  | GT  { Gt }
+  | LEQ { Leq }
+  | GEQ { Geq }
+  | EQ  { Eq }
+  | NEQ { Neq }

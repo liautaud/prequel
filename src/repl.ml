@@ -1,7 +1,7 @@
 open Shared
 open Print
-open Query
 open Command
+open Sql
 
 
 (** print_header : unit -> unit
@@ -44,10 +44,10 @@ let parse_input () =
     raise SyntaxError
 
 
-(** run_query : Query.t -> unit
+(** run_query : Sql.t -> unit
     Attempts to execute a query using the interpreter. *)
 let run_query query =
-  Query.show query
+  Sql.show query
   |> print_endline
 
 
