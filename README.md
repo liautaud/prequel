@@ -12,9 +12,10 @@ It was written for the [DBDM course](https://perso.liris.cnrs.fr/emmanuel.coquer
 
 # Installation guide.
 
-This project depends on `obuild`, which can be installed using [OPAM](https://opam.ocaml.org/doc/Install.html):
+This project depends on a few packages, which can be installed using [OPAM](https://opam.ocaml.org/doc/Install.html):
 ```
 opam install obuild
+opam install ppx_deriving
 ```
 
 Then, building the project is as simple as running:
