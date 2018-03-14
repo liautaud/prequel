@@ -1,0 +1,17 @@
+name: prequel
+version: 1.0.0
+synopsis: A minimalistic SQL engine for CSV files.
+authors: Romain Liautaud <romain@liautaud.fr>
+homepage: https://github.com/liautaud/prequel
+license: MIT
+obuild-ver: 1
+
+executable prequel
+  main: main.ml
+  src-dir: src
+  c-dir: ./
+
+executable repl
+  main: repl.ml
+  src-dir: src
+  c-dir: ./
