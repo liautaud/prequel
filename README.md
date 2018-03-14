@@ -16,6 +16,7 @@ This project depends on a few packages, which can be installed using [OPAM](http
 ```
 opam install obuild
 opam install ppx_deriving
+opam install csv
 ```
 
 Then, building the project is as simple as running:

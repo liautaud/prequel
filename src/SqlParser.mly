@@ -1,4 +1,5 @@
 %{
+    open Shared
     open Command
     open Sql
 %}
@@ -25,13 +26,13 @@ main:
 
 query:
   | SELECT attributes FROM relations
-    { Select($2, $4, VoidOp) }
+    { SqlSelect($2, $4, VoidOp) }
   | SELECT attributes FROM relations WHERE conditions
-    { Select($2, $4, $6) }
+    { SqlSelect($2, $4, $6) }
   | LPAR query RPAR MINUS LPAR query RPAR
-    { Minus($2, $6) }
+    { SqlMinus($2, $6) }
   | LPAR query RPAR UNION LPAR query RPAR
-    { Union($2, $6) }
+    { SqlUnion($2, $6) }
 
 
 /* Attributes */
@@ -44,13 +45,13 @@ attribute_list:
   | attribute_named { [$1] }
 
 attribute_named:
-  | attribute       { $1 }
-  | attribute ID    { {$1 with a_alias = Some ($2)} }
-  | attribute AS ID { {$1 with a_alias = Some ($3)} }
+  | attribute       { {a_name = $1; a_alias = None} }
+  | attribute ID    { {a_name = $1; a_alias = Some ($2)} }
+  | attribute AS ID { {a_name = $1; a_alias = Some ($3)} }
 
 attribute:
-  | ID              { {a_name = $1; a_from = None;      a_alias = None} }
-  | ID POINT ID     { {a_name = $3; a_from = Some ($1); a_alias = None} }
+  | ID              { (None, $1) }
+  | ID POINT ID     { (Some ($1), $3) }
 
 
 /* Relations */

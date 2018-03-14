@@ -47,7 +47,19 @@ let parse_input () =
 (** run_query : Sql.t -> unit
     Attempts to execute a query using the interpreter. *)
 let run_query query =
-  Sql.show query
+  query
+  |> Sql.show
+  |> print_endline;
+
+  query
+  |> Sql.compile
+  |> Relational.show
+  |> print_endline;
+
+  query
+  |> Sql.compile
+  |> Relational.eval
+  |> Relational.show_instance
   |> print_endline
 
 

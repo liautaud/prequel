@@ -1,27 +1,9 @@
 (** Types and functions for manipulating SQL queries. *)
-
-(** A logical operator. *)
-type bin_op =
-  | And
-  | Or
-
-(** A comparison operator. *)
-and comp_op =
-  | Lt
-  | Gt
-  | Leq
-  | Geq
-  | Eq
-  | Neq
-
-(** An attribute, with a possible alias and column. *)
-and attribute = {
-  a_name:  string;
-  a_from:  string option;
-  a_alias: string option; }
+open Shared
+open Relational
 
 (** A relation, with a possible alias. *)
-and relation = {
+type relation = {
   r_source: source;
   r_alias:  string; }
 
@@ -38,9 +20,21 @@ and condition =
   | In of attribute * t
   | NotIn of attribute * t
 
+(** An attribute with a possible alias. *)
+and aliased = {
+  a_name:  attribute;
+  a_alias: string option; }
+
 (** An abstract representation of a query. *)
 and t =
-  | Select of attribute list * relation list * condition
-  | Minus of t * t
-  | Union of t * t
+  | SqlSelect of aliased list * relation list * condition
+  | SqlMinus of t * t
+  | SqlUnion of t * t
   [@@deriving show]
+
+
+(** compile : t -> Relational.t
+    Compiles a query into a relational term. *)
+let rec compile = function
+  (* TODO(liautaud) *)
+  | _ -> failwith "Not implemented."
