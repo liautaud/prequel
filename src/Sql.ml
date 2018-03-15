@@ -62,6 +62,7 @@ let rec fun_of_condition = function
         fo t.(i1) t.(i2))
   | _ -> failwith "Not implemented."
 
+
 (** compile : t -> Relational.t
     Compiles a query into a relational term. *)
 let rec compile = function

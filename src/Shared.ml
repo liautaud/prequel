@@ -52,9 +52,10 @@ let fun_of_comp_op = function
 (* We chose to distinguish between the names of the
    attributes and the expressions which are used to
    select them. *)
-type attribute =
-  | Composite of string * string  (* e.g. `relation.column` *)
-  | Simple    of string           (* e.g. `alias` *)
+type attribute = {
+  att_relation: string;
+  att_name: string;
+  att_alias: string option; }
 
 and selector =
   (string option) * string
@@ -65,7 +66,10 @@ and selector =
     Returns whether a given selector matches an
     attribute name. *)
 let matches_selector s a = match (s, a) with
-  | (None,   c), Simple (c')        when c = c' -> true
-  | (None,   c), Composite (r', c') when c = c' -> true
-  | (Some r, c), Composite (r', c') when c = c' && r = r' -> true
+  | (None, c), {att_alias = Some c'; _}
+      when c = c' -> true
+  | (None, c), {att_name = c'; _}
+      when c = c' -> true
+  | (Some r, c), {att_relation = r'; att_name = c'; _}
+      when c = c' && r = r' -> true
   | _ -> false

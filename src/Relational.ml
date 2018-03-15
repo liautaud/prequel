@@ -82,7 +82,7 @@ let instance_of_source path name =
   let header =
     csv
     |> Csv.Rows.header
-    |> List.map (fun col -> Composite (name, col))
+    |> List.map (fun col -> {att_relation = name; att_name = col; att_alias = None})
     |> Array.of_list in
 
   let lines =
@@ -115,13 +115,15 @@ let rec eval = function
 
   | Renaming (t, before, after) ->
       let t' = eval t in
-      let m = matches_selector before in
-      let a' = Simple (after) in
 
-      (* Replace all the attributes which match
+      (* Alias all the attributes which match
          the `before` selector with the new name. *)
+      let matches = matches_selector before in
       let h' = t'.i_header
-        |> Array.map (fun a -> if m a then a' else a) in
+        |> Array.map (fun a ->
+          if matches a then
+            {a with att_alias = Some after}
+          else a) in
 
       {t' with i_header = h'}
 
