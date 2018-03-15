@@ -27,6 +27,18 @@ type t =
   [@@deriving show]
 
 
+(** print_instance : instance -> unit
+    Prints the given instance to the standard output. *)
+let print_instance inst =
+  let headers =
+    inst.i_header
+    |> Array.map (function
+      | {att_alias = Some s; _} -> s
+      | {att_relation = r; att_name = s; _} -> r ^ "." ^ s) in
+
+  print_table <| headers :: inst.i_lines
+
+
 (** find_indices : header -> selector list -> int list
     Returns the list of column of the header which
     matches any of the given selectors. This could

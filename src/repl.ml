@@ -4,6 +4,10 @@ open Command
 open Sql
 
 
+(** REPL state variables. *)
+let debug = ref false
+
+
 (** print_header : unit -> unit
     Prints the welcome message to the standard output. *)
 let print_header () =
@@ -21,6 +25,7 @@ let print_header () =
 
   "Prequel version 1.0.                                   \n" ^
   "Enter .help for usage tips.                            \n" ^
+  "Enter .debug to turn on debug output.                  \n" ^
   "Enter .cd to change the working directory.             \n"
   |> faint
   |> print_endline
@@ -47,36 +52,42 @@ let parse_input () =
 (** run_query : Sql.t -> unit
     Attempts to execute a query using the interpreter. *)
 let run_query query =
-  print_newline ();
-  print_endline <| bold "Requête SQL :";
-  query
-  |> Sql.show
-  |> print_endline;
-  print_newline ();
+  if !debug then begin
+    print_newline ();
+    print_endline <| bold "Requête SQL :";
+    query
+    |> Sql.show
+    |> print_endline;
+    print_newline ();
 
-  print_endline <| bold "Terme relationnel :";
-  query
-  |> Sql.compile
-  |> Relational.show
-  |> print_endline;
-  print_newline ();
+    print_endline <| bold "Terme relationnel :";
+    query
+    |> Sql.compile
+    |> Relational.show
+    |> print_endline;
+    print_newline ();
 
-  print_endline <| bold "Résultat :";
+    print_endline <| bold "Résultat :"
+  end;
+
   query
   |> Sql.compile
   |> Relational.eval
-  |> Relational.show_instance
-  |> print_endline;
+  |> Relational.print_instance;
   print_newline ()
 
 
 (** run_command : Command.t -> unit
     Attemps to run a top-level command. *)
 let run_command = function
-  | Command "help" -> print_error "Not implemented."
-  | Command "cd"   -> print_error "Not implemented."
-  | Command _      -> print_error "Unknown command."
-  | Query q        -> run_query q
+  | Command "debug" ->
+      debug := true;
+      print_endline <| faint "Debug output enabled.";
+      print_newline ()
+  | Command "help"  -> print_error "Not implemented."
+  | Command "cd"    -> print_error "Not implemented."
+  | Command _       -> print_error "Unknown command."
+  | Query q         -> run_query q
 
 
 (** Main read-eval-print loop. *)
