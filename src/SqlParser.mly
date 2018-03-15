@@ -45,11 +45,11 @@ attribute_list:
   | attribute_named { [$1] }
 
 attribute_named:
-  | attribute       { {a_name = $1; a_alias = None} }
-  | attribute ID    { {a_name = $1; a_alias = Some ($2)} }
-  | attribute AS ID { {a_name = $1; a_alias = Some ($3)} }
+  | selector       { {a_selector = $1; a_alias = None} }
+  | selector ID    { {a_selector = $1; a_alias = Some ($2)} }
+  | selector AS ID { {a_selector = $1; a_alias = Some ($3)} }
 
-attribute:
+selector:
   | ID              { (None, $1) }
   | ID POINT ID     { (Some ($1), $3) }
 
@@ -78,10 +78,10 @@ conditions_and:
   | condition { $1 }
 
 condition:
-  | LPAR condition RPAR              { $2 }
-  | attribute comp attribute         { CompOp($2, $1, $3) }
-  | attribute IN LPAR query RPAR     { In($1, $4) }
-  | attribute NOT IN LPAR query RPAR { NotIn($1, $5) }
+  | LPAR condition RPAR             { $2 }
+  | selector comp selector          { CompOp($2, $1, $3) }
+  | selector IN LPAR query RPAR     { In($1, $4) }
+  | selector NOT IN LPAR query RPAR { NotIn($1, $5) }
 
 
 /* Comparison operators */

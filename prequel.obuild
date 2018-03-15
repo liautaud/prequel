@@ -6,12 +6,6 @@ homepage: https://github.com/liautaud/prequel
 license: MIT
 obuild-ver: 1
 
-executable prequel
-  main: main.ml
-  src-dir: src
-  c-dir: ./
-  build-deps: ppx_deriving.show, csv
-
 executable repl
   main: repl.ml
   src-dir: src

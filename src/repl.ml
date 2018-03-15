@@ -47,20 +47,27 @@ let parse_input () =
 (** run_query : Sql.t -> unit
     Attempts to execute a query using the interpreter. *)
 let run_query query =
+  print_newline ();
+  print_endline <| bold "Requête SQL :";
   query
   |> Sql.show
   |> print_endline;
+  print_newline ();
 
+  print_endline <| bold "Terme relationnel :";
   query
   |> Sql.compile
   |> Relational.show
   |> print_endline;
+  print_newline ();
 
+  print_endline <| bold "Résultat :";
   query
   |> Sql.compile
   |> Relational.eval
   |> Relational.show_instance
-  |> print_endline
+  |> print_endline;
+  print_newline ()
 
 
 (** run_command : Command.t -> unit
@@ -84,6 +91,6 @@ let () =
       parse_input ()
       |> run_command
     with
-      | SyntaxError    -> print_error "Syntax error."
-      | ExecutionError -> print_error "Execution error."
+      | SyntaxError        -> print_error <| "Syntax error."
+      | ExecutionError (s) -> print_error <| "Execution error: " ^ s
   done

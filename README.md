@@ -31,4 +31,8 @@ To play around with the engine, just run `./repl` to get an SQLite-like REPL.
 
 For better usability, install `rlwrap` and run `rlwrap ./repl` instead.
 
-Otherwise, run `./prequel --help` for a complete list of features.
+Here are a few examples of requests:
+
+- `SELECT * FROM "tests/projets.csv" projets;`
+- `SELECT * FROM "tests/projets.csv" projets WHERE idp > responsable;`
+- `SELECT idp AS foo FROM "tests/projets.csv" projets WHERE foo > responsable;`
